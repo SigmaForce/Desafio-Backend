@@ -9,6 +9,13 @@ import {
 import { fastifyCors } from "@fastify/cors";
 import { fastifySwagger } from "@fastify/swagger";
 import ScalarApiReference from "@scalar/fastify-api-reference";
+import { env } from "./env";
+import { createMovie } from "./routes/movies/create-movie";
+import { deleteMovie } from "./routes/movies/delete-movie";
+import { listMovie } from "./routes/movies/list-movie";
+import { listMovies } from "./routes/movies/list-movies";
+import { updateMovie } from "./routes/movies/update-movie";
+import { createUser } from "./routes/user/create-user";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -34,7 +41,15 @@ app.register(ScalarApiReference, {
   routePrefix: "/docs",
 });
 
-app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
-  console.log(`HTTP server running on http://localhost:3333`);
-  console.log(`Docs available at http://localhost:3333/docs`);
+app.register(createUser);
+
+app.register(createMovie);
+app.register(deleteMovie);
+app.register(updateMovie);
+app.register(listMovies);
+app.register(listMovie);
+
+app.listen({ port: env.PORT, host: "0.0.0.0" }).then(() => {
+  console.log(`HTTP server running on http://localhost:${env.PORT}`);
+  console.log(`Docs available at http://localhost:${env.PORT}/docs`);
 });
