@@ -8,6 +8,7 @@ export const createMovie: FastifyPluginAsyncZod = async (app) => {
   app.post(
     "/api/movie",
     {
+      onRequest: [app.authenticate],
       schema: {
         summary: "Create Movie",
         tags: ["Movies"],
@@ -30,7 +31,6 @@ export const createMovie: FastifyPluginAsyncZod = async (app) => {
           backdropUrl: z.string(),
           trailerUrl: z.string(),
           genres: z.array(z.string()),
-          userId: z.string().uuid(),
         }),
         response: {
           200: createSelectSchema(movies),
@@ -42,7 +42,7 @@ export const createMovie: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       const movieData = request.body;
-
+      const userId = request.user!.id;
       try {
         const [newMovie] = await db
           .insert(movies)
@@ -65,7 +65,7 @@ export const createMovie: FastifyPluginAsyncZod = async (app) => {
             backdropUrl: movieData.backdropUrl,
             trailerUrl: movieData.trailerUrl,
             genres: movieData.genres,
-            userId: movieData.userId,
+            userId: userId,
           })
           .returning();
 

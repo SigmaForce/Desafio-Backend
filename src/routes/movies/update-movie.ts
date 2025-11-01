@@ -9,6 +9,7 @@ export const updateMovie: FastifyPluginAsyncZod = async (app) => {
   app.put(
     "/api/movie/:id",
     {
+      onRequest: [app.authenticate],
       schema: {
         summary: "Update a specific movie by ID",
         tags: ["Movies"],
@@ -37,6 +38,9 @@ export const updateMovie: FastifyPluginAsyncZod = async (app) => {
         }),
         response: {
           200: createSelectSchema(movies),
+          403: z.object({
+            message: z.string(),
+          }),
           404: z.object({
             message: z.string(),
           }),
@@ -49,7 +53,7 @@ export const updateMovie: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const { id } = request.params;
       const movieData = request.body;
-
+      const userId = request.user!.id;
       try {
         const [existingMovie] = await db
           .select()
@@ -59,6 +63,12 @@ export const updateMovie: FastifyPluginAsyncZod = async (app) => {
 
         if (!existingMovie) {
           return reply.status(404).send({ message: "Movie not found" });
+        }
+
+        if (existingMovie.userId !== userId) {
+          return reply.status(403).send({
+            message: "Você não tem permissão para atualizar este filme",
+          });
         }
 
         const convertedData: any = { ...movieData };
