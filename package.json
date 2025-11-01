@@ -24,6 +24,7 @@
     "drizzle-orm": "^0.44.7",
     "drizzle-zod": "^0.8.3",
     "fastify": "^5.6.1",
+    "fastify-plugin": "^5.1.0",
     "fastify-type-provider-zod": "^6.1.0",
     "pg": "^8.16.3",
     "zod": "^4.1.12"
