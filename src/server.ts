@@ -12,6 +12,7 @@ import { fastifySwagger } from "@fastify/swagger";
 import ScalarApiReference from "@scalar/fastify-api-reference";
 import { env } from "./env";
 
+import fastifyMultipart from "@fastify/multipart";
 import authenticatePlugin from "./plugins/authenticate";
 import { login } from "./routes/auth/login";
 import { logout } from "./routes/auth/logout";
@@ -30,6 +31,13 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(fastifyCors, {
   origin: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+});
+
+app.register(fastifyMultipart, {
+  limits: {
+    fileSize: 100 * 1024 * 1024,
+    files: 10,
+  },
 });
 
 app.register(fastifyCookie, {

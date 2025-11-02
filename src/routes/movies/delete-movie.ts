@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { movies } from "@/db/schema";
-
+import { deleteFromS3, extractKeyFromUrl } from "@/utils/storage";
 import { eq } from "drizzle-orm";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
@@ -45,6 +45,16 @@ export const deleteMovie: FastifyPluginAsyncZod = async (app) => {
         return reply.status(403).send({
           message: "Você não tem permissão para deletar este filme",
         });
+      }
+
+      try {
+        await Promise.all([
+          deleteFromS3(extractKeyFromUrl(movie.posterUrl)),
+          deleteFromS3(extractKeyFromUrl(movie.backdropUrl)),
+          deleteFromS3(extractKeyFromUrl(movie.trailerUrl)),
+        ]);
+      } catch (error) {
+        console.error("Erro ao deletar arquivos do S3:", error);
       }
 
       await db.delete(movies).where(eq(movies.id, id));
