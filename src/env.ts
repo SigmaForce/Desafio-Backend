@@ -10,6 +10,8 @@ const envSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string(),
   AWS_S3_BUCKET_NAME: z.string(),
   AWS_REGION: z.string(),
+  RESEND_API_KEY: z.string(),
+  WEB_URL: z.url(),
 });
 
 export const env = envSchema.parse(process.env);
