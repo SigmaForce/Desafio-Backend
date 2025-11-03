@@ -51,7 +51,6 @@ export const deleteMovie: FastifyPluginAsyncZod = async (app) => {
         await Promise.all([
           deleteFromS3(extractKeyFromUrl(movie.posterUrl)),
           deleteFromS3(extractKeyFromUrl(movie.backdropUrl)),
-          deleteFromS3(extractKeyFromUrl(movie.trailerUrl)),
         ]);
       } catch (error) {
         console.error("Erro ao deletar arquivos do S3:", error);
