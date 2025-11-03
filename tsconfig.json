@@ -12,8 +12,16 @@
     "skipLibCheck": true,
     "moduleResolution": "node16",
 
+    "rootDir": "src",
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+
     "paths": {
       "@/*": ["./src/*"]
     }
-  }
+  },
+
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
