@@ -15,23 +15,15 @@ export const listMovies: FastifyPluginAsyncZod = async (app) => {
         querystring: z.object({
           page: z.coerce.number().min(1).default(1),
           limit: z.coerce.number().min(1).max(100).default(10),
-
           title: z.string().optional(),
-          language: z.string().optional(),
           status: z.string().optional(),
-
-          genre: z.string().optional(),
-
           minRating: z.coerce.number().optional(),
           maxRating: z.coerce.number().optional(),
           minYear: z.coerce.number().optional(),
           maxYear: z.coerce.number().optional(),
           minDuration: z.coerce.number().optional(),
           maxDuration: z.coerce.number().optional(),
-          ageRating: z.coerce.number().optional(),
-
           userId: z.string().uuid().optional(),
-
           orderBy: z
             .enum([
               "title",
@@ -65,16 +57,13 @@ export const listMovies: FastifyPluginAsyncZod = async (app) => {
         page,
         limit,
         title,
-        language,
         status,
-        genre,
         minRating,
         maxRating,
         minYear,
         maxYear,
         minDuration,
         maxDuration,
-        ageRating,
         userId,
         orderBy,
         order,
@@ -87,16 +76,8 @@ export const listMovies: FastifyPluginAsyncZod = async (app) => {
           conditions.push(ilike(movies.title, `%${title}%`));
         }
 
-        if (language) {
-          conditions.push(eq(movies.language, language));
-        }
-
         if (status) {
           conditions.push(eq(movies.status, status));
-        }
-
-        if (genre) {
-          conditions.push(sql`${movies.genres} @> ARRAY[${genre}]::text[]`);
         }
 
         if (minRating !== undefined) {
@@ -121,10 +102,6 @@ export const listMovies: FastifyPluginAsyncZod = async (app) => {
 
         if (maxDuration !== undefined) {
           conditions.push(lte(movies.durationMinutes, maxDuration));
-        }
-
-        if (ageRating !== undefined) {
-          conditions.push(eq(movies.ageRating, ageRating));
         }
 
         if (userId) {

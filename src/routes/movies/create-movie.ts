@@ -57,6 +57,7 @@ export const createMovie: FastifyPluginAsyncZod = async (app) => {
           "releaseDate",
           "durationMinutes",
           "status",
+          "trailerUrl",
         ];
 
         for (const field of requiredFields) {
@@ -67,7 +68,7 @@ export const createMovie: FastifyPluginAsyncZod = async (app) => {
           }
         }
 
-        if (!files.poster || !files.backdrop || !files.trailer) {
+        if (!files.poster || !files.backdrop) {
           return reply.status(400).send({
             message: "É necessário enviar poster, backdrop e trailer",
           });
@@ -78,11 +79,6 @@ export const createMovie: FastifyPluginAsyncZod = async (app) => {
           "image/png",
           "image/webp",
           "image/gif",
-        ];
-        const allowedVideoTypes = [
-          "video/mp4",
-          "video/quicktime",
-          "video/x-msvideo",
         ];
 
         if (!allowedImageTypes.includes(files.poster.mimetype)) {
@@ -97,19 +93,10 @@ export const createMovie: FastifyPluginAsyncZod = async (app) => {
           });
         }
 
-        if (!allowedVideoTypes.includes(files.trailer.mimetype)) {
-          return reply.status(400).send({
-            message: "Trailer deve ser um vídeo (MP4, MOV ou AVI)",
-          });
-        }
-
-        const [posterResult, backdropResult, trailerResult] = await Promise.all(
-          [
-            uploadFileToS3(files.poster, "posters"),
-            uploadFileToS3(files.backdrop, "backdrops"),
-            uploadFileToS3(files.trailer, "trailers"),
-          ]
-        );
+        const [posterResult, backdropResult] = await Promise.all([
+          uploadFileToS3(files.poster, "posters"),
+          uploadFileToS3(files.backdrop, "backdrops"),
+        ]);
 
         let genres = fields.genres;
         if (typeof genres === "string") {
@@ -139,7 +126,7 @@ export const createMovie: FastifyPluginAsyncZod = async (app) => {
             ageRating: fields.ageRating ? Number(fields.ageRating) : 0,
             posterUrl: posterResult.url,
             backdropUrl: backdropResult.url,
-            trailerUrl: trailerResult.url,
+            trailerUrl: fields.trailerUrl,
             genres: genres,
             userId: userId,
           })
