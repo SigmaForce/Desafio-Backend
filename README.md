@@ -10,6 +10,40 @@ Antes de começar, certifique-se de ter instalado:
 - [pnpm](https://pnpm.io/) (v10.19.0 ou superior)
 - [Docker](https://www.docker.com/) (para o banco de dados PostgreSQL)
 
+## Instalação
+
+1. Clone o repositório
+
+```bash
+git https://github.com/SigmaForce/Desafio-Frontend.git
+cd Desafio-Frontend
+```
+
+2. Instale as dependências:
+
+```bash
+pnpm install
+```
+
+3. Inicie o banco de dados PostgreSQL usando Docker:
+
+```bash
+docker compose up -d
+```
+
+4. Execute as migrações do banco de dados:
+
+```bash
+pnpm db:generate
+pnpm db:migrate
+```
+
+5. (Opcional) Popule o banco de dados com dados iniciais:
+
+```bash
+pnpm db:seed
+```
+
 ## Configuração do Ambiente
 
 1. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
@@ -20,36 +54,9 @@ COOKIE_SECRET=43e701b5-3252-43b9-a436-a8e4625c4d22
 RESEND_API_KEY= # RESEND API KEY
 AWS_ACCESS_KEY_ID= # AWS ACCESS KEY
 AWS_SECRET_ACCESS_KEY= # AWS SECRET KEY
-AWS_S3_BUCKET_NAME=#NOME DO BUCKET S3
+AWS_S3_BUCKET_NAME=# NOME DO BUCKET S3
 AWS_REGION= # AWS REGION
 WEB_URL=http:localhost:3333 #Seu dominio de hospedagem
-```
-
-## Instalação
-
-1. Instale as dependências:
-
-```bash
-pnpm install
-```
-
-2. Inicie o banco de dados PostgreSQL usando Docker:
-
-```bash
-docker compose up -d
-```
-
-3. Execute as migrações do banco de dados:
-
-```bash
-pnpm db:generate
-pnpm db:migrate
-```
-
-4. (Opcional) Popule o banco de dados com dados iniciais:
-
-```bash
-pnpm db:seed
 ```
 
 ## Desenvolvimento
@@ -101,3 +108,16 @@ src/
 ├── services/          # Serviços (EmailService)
 └── utils/             # Funções e auxiliares utilitários
 ```
+
+## Documentação da API
+
+- [Docs](https://desafio-backend-30y2.onrender.com/docs/)
+
+## Cubos Movies (Site)
+
+- [Cubos movies](https://desafio-frontend-three-mauve.vercel.app/)
+
+## Repositorios
+
+- [Backend](https://github.com/SigmaForce/Desafio-Backend)
+- [Frontend](https://github.com/SigmaForce/Desafio-Frontend)
